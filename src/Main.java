@@ -6,62 +6,30 @@ public class Main {
 
     static int WIDTH = 100;
     static int HEIGHT = 100;
-    static int RND_POINTS = 50;
+    static int RND_POINTS = 5;
     static int SEED = 555;
     static double CONDITION = 0.0025;
+    static boolean chartVisible = true;
     static double[][] temperature;
+    static Chart chart;
 
 
     public static void main(String[] args) {
 
         temperature = generateTemperatureMatrix();
 
-
+    if(chartVisible) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        Chart chart = new Chart(temperature);
+        chart = new Chart(temperature);
         frame.add(chart);
         frame.pack();
         frame.setVisible(true);
+    }
 
-
-        Thread compThread = new Thread(() -> {
-            boolean stable = false;
-            double CONDITION = 0.0025; // 0.25 degrees
-
-            long start = System.currentTimeMillis();
-            while (!stable) {
-                stable = true;
-
-                for (int i = 0; i < WIDTH; i++) {
-                    for (int j = 0; j < HEIGHT; j++) {
-                        if (temperature[i][j] == 1) continue;
-
-                        double value = 0;
-                        if (i > 0) value += temperature[i - 1][j];
-                        if (i < WIDTH - 1) value += temperature[i + 1][j];
-                        if (j > 0) value += temperature[i][j - 1];
-                        if (j < HEIGHT - 1) value += temperature[i][j + 1];
-                        value /= 4;
-
-                        double diff = Math.abs(value - temperature[i][j]);
-                        if (diff > CONDITION) {
-                            stable = false;
-                        }
-
-                        temperature[i][j] = value;
-                    }
-                }
-
-                if (!stable) {
-                    chart.repaint();
-                }
-            }
-            long end = System.currentTimeMillis();
-            System.out.println("Done. Execution time: " + (end - start) + " ms");
-        });
-        compThread.start();
+      ComputationThread computationThread = new ComputationThread(temperature, CONDITION, chartVisible, chart);
+      computationThread.start();
     }
 
 
