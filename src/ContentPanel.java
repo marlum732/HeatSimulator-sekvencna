@@ -10,11 +10,11 @@ public class ContentPanel extends JPanel {
 
 
 
-    public ContentPanel(int WIDTH, int HEIGHT, double[][] temperature) {
+    public ContentPanel(int WIDTH, int HEIGHT, double[][] temperature, Controller controller) {
         this.temperature = temperature;
         this.setLayout(new BorderLayout());
 
-        setupPanel = new SetupPanel(300, 500);
+        setupPanel = new SetupPanel(300, 500, controller);
         this.add(setupPanel, BorderLayout.CENTER);
 
         chart = new Chart(temperature);

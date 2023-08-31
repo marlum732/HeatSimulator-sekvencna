@@ -6,8 +6,10 @@ import java.awt.event.ActionListener;
 public class SetupPanel extends JPanel {
 
     private JTextField inputWidth, inputHeight, inputRndPoints;
+    private Controller controller;
 
-    public SetupPanel(int WIDTH, int HEIGHT) {
+    public SetupPanel(int WIDTH, int HEIGHT, Controller controller) {
+        this.controller = controller;
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         SpringLayout layout = new SpringLayout();
@@ -31,6 +33,13 @@ public class SetupPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 ContentPanel parent = (ContentPanel) getParent();
                 parent.showHideMap();
+            }
+        });
+
+        startSimulationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.test();
             }
         });
 

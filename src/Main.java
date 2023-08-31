@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.util.Random;
 
 public class Main {
@@ -12,15 +11,21 @@ public class Main {
     static boolean chartVisible = true;
     static double[][] temperature;
 
+
     public static void main(String[] args) {
 
         temperature = generateTemperatureMatrix();
 
-        MainFrame mainFrame = new MainFrame(temperature);
+        Controller controller = new Controller();
+        MainFrame mainFrame = new MainFrame(temperature, controller);
 
 
-      ComputationThread computationThread = new ComputationThread(temperature, CONDITION, chartVisible, mainFrame.getChart());
+      ComputationThread computationThread = new ComputationThread(temperature, CONDITION, chartVisible, mainFrame.getChart(), controller);
       computationThread.start();
+
+      controller.setMainFrame(mainFrame);
+      controller.setComputationThread(computationThread);
+
     }
 
 

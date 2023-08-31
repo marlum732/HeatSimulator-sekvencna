@@ -6,20 +6,30 @@ public class ComputationThread extends Thread {
     private final boolean chartVisible;
     private final double[][] temperature;
     private final Chart chart;
+    private final Controller controller;
+    private boolean isRunning = false;
 
 
-    public ComputationThread(double[][] temperature, double CONDITION, boolean chartVisible, Chart chart) {
+    public ComputationThread(double[][] temperature, double CONDITION, boolean chartVisible, Chart chart, Controller controller) {
         this.WIDTH = temperature.length;
         this.HEIGHT = temperature[0].length;
         this.CONDITION = CONDITION;
         this.chartVisible = chartVisible;
         this.temperature = temperature;
         this.chart = chart;
+        this.controller=controller;
     }
 
 
     @Override
     public void run() {
+        while (!isRunning){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         boolean stable = false;
 
         long start = System.currentTimeMillis();
@@ -50,5 +60,14 @@ public class ComputationThread extends Thread {
         }
         long end = System.currentTimeMillis();
         System.out.println("Execution time: " + (end - start) + " ms");
+    }
+
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
     }
 }
