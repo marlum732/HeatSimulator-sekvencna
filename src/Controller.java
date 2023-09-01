@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.Random;
 
 public class Controller {
@@ -14,6 +15,27 @@ public class Controller {
     public Controller(){
 
 
+
+    }
+
+    public void makeNewSetup() {
+        generateData(); //new matrix
+
+        Runnable afterDataGeneration = new Runnable() {
+            @Override
+            public void run() {
+                mainFrame.setupNewChart(); //new chart
+                mainFrame.revalidate();
+                mainFrame.repaint();
+                mainFrame.pack();
+            }
+        };
+
+        SwingUtilities.invokeLater(afterDataGeneration);
+    }
+
+    public void updateExecutionTime(String timeTaken) {
+        mainFrame.updateExecutionTime(timeTaken);
     }
 
 
@@ -38,8 +60,14 @@ public class Controller {
     }
 
 
-    public void test() {
-        computationThread.setRunning(!computationThread.isRunning());
+    public void startSimulation() {
+        if (computationThread == null || !computationThread.isAlive()) {
+            computationThread = new ComputationThread(this);
+            computationThread.setRunning(true);
+            computationThread.start();
+        } else {
+            computationThread.setRunning(!computationThread.isRunning());
+        }
     }
 
     public void repaintChart(){
@@ -57,5 +85,18 @@ public class Controller {
 
     public void setComputationThread(ComputationThread computationThread) {
         this.computationThread = computationThread;
+    }
+
+
+    public void setWIDTH(int WIDTH) {
+        this.WIDTH = WIDTH;
+    }
+
+    public void setHEIGHT(int HEIGHT) {
+        this.HEIGHT = HEIGHT;
+    }
+
+    public void setRND_POINTS(int RND_POINTS) {
+        this.RND_POINTS = RND_POINTS;
     }
 }

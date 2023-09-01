@@ -1,18 +1,18 @@
 public class ComputationThread extends Thread {
 
-    private final int WIDTH;
-    private final int HEIGHT;
-    private final double[][] temperature;
+    private int WIDTH;
+    private int HEIGHT;
+    private double[][] temperature;
     private final Controller controller;
     private boolean isRunning = false;
     private double CONDITION = 0.0025;
 
 
-    public ComputationThread(double[][] temperature, Controller controller) {
+    public ComputationThread(Controller controller) {
+        this.controller=controller;
+        this.temperature = controller.getTemperature();
         this.WIDTH = temperature.length;
         this.HEIGHT = temperature[0].length;
-        this.temperature = temperature;
-        this.controller=controller;
     }
 
 
@@ -54,6 +54,8 @@ public class ComputationThread extends Thread {
             }
         }
         long end = System.currentTimeMillis();
+
+        controller.updateExecutionTime((end-start) + "");
         System.out.println("Execution time: " + (end - start) + " ms");
     }
 
@@ -63,6 +65,9 @@ public class ComputationThread extends Thread {
     }
 
     public void setRunning(boolean running) {
+        temperature = controller.getTemperature();
+        WIDTH = temperature.length;
+        HEIGHT = temperature[0].length;
         isRunning = running;
     }
 }

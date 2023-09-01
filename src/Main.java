@@ -1,4 +1,3 @@
-import java.util.Random;
 
 public class Main {
 
@@ -8,11 +7,10 @@ public class Main {
         Controller controller = new Controller();
         controller.generateData();
 
+        MainFrame mainFrame = new MainFrame(controller);
 
-        MainFrame mainFrame = new MainFrame(controller.getTemperature(), controller);
 
-
-      ComputationThread computationThread = new ComputationThread(controller.getTemperature(), controller);
+      ComputationThread computationThread = new ComputationThread(controller);
       computationThread.start();
 
       controller.setMainFrame(mainFrame);

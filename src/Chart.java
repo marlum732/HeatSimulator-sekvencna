@@ -7,13 +7,15 @@ public class Chart extends JComponent {
 
     private final int TARGET_WIDTH = 600;
     private final int TARGET_HEIGHT = 600;
+    private final Controller controller;
     private double[][] temperature;
 
 
-    public Chart(double[][] temperature) {
+    public Chart(Controller controller) {
+        this.controller=controller;
+        this.temperature=controller.getTemperature();
         this.setPreferredSize(new Dimension(TARGET_WIDTH,TARGET_HEIGHT));
         this.setDoubleBuffered(true);
-        this.temperature = temperature;
     }
 
 

@@ -6,23 +6,32 @@ public class ContentPanel extends JPanel {
     private SetupPanel setupPanel;
     private Chart chart;
     private boolean mapVisible = true;
-    private double[][] temperature;
+    private Controller controller;
 
 
 
-    public ContentPanel(int WIDTH, int HEIGHT, double[][] temperature, Controller controller) {
-        this.temperature = temperature;
+    public ContentPanel(Controller controller) {
+        this.controller=controller;
         this.setLayout(new BorderLayout());
 
         setupPanel = new SetupPanel(300, 500, controller);
         this.add(setupPanel, BorderLayout.CENTER);
 
-        chart = new Chart(temperature);
+        chart = new Chart(controller);
         chart.setVisible(mapVisible);
         this.add(chart, BorderLayout.EAST);
 
     }
 
+
+    public void setupNewChart() {
+        Chart newChart = new Chart(controller);
+        remove(chart);
+        chart = newChart; //new chart
+        add(chart, BorderLayout.EAST); //to panel
+        revalidate();
+        repaint();
+    }
 
     public void showHideMap() {
         mapVisible = !mapVisible;
@@ -43,6 +52,10 @@ public class ContentPanel extends JPanel {
             parentFrame.pack();
         }
 
+    }
+
+    public void updateExecutionTime(String s){
+        setupPanel.updateExecutionTime(s);
     }
 
     public Chart getChart() {
