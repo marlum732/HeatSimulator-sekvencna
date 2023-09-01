@@ -2,21 +2,16 @@ public class ComputationThread extends Thread {
 
     private final int WIDTH;
     private final int HEIGHT;
-    private final double CONDITION;
-    private final boolean chartVisible;
     private final double[][] temperature;
-    private final Chart chart;
     private final Controller controller;
     private boolean isRunning = false;
+    private double CONDITION = 0.0025;
 
 
-    public ComputationThread(double[][] temperature, double CONDITION, boolean chartVisible, Chart chart, Controller controller) {
+    public ComputationThread(double[][] temperature, Controller controller) {
         this.WIDTH = temperature.length;
         this.HEIGHT = temperature[0].length;
-        this.CONDITION = CONDITION;
-        this.chartVisible = chartVisible;
         this.temperature = temperature;
-        this.chart = chart;
         this.controller=controller;
     }
 
@@ -54,8 +49,8 @@ public class ComputationThread extends Thread {
                     temperature[i][j] = value;
                 }
             }
-            if (!stable && chartVisible) {
-                chart.repaint();
+            if (!stable && controller.isChartVisible()) {
+                controller.repaintChart();
             }
         }
         long end = System.currentTimeMillis();
