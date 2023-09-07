@@ -1,3 +1,4 @@
+import javax.naming.ldap.Control;
 import javax.swing.*;
 import java.util.Random;
 
@@ -5,33 +6,45 @@ public class Controller {
     private int WIDTH = 200;
     private int HEIGHT = 200;
     private int RND_POINTS = 200;
-    private int SEED = 555;
+    private int SEED = 777;
     private boolean chartVisible = true;
+    private boolean alreadySimulated = false;
     private double[][] temperature;
 
     private MainFrame mainFrame;
     private ComputationThread computationThread;
 
-    public Controller(){
+    public Controller() {
+        generateData();
+        computationThread = new ComputationThread(this);
+        computationThread.start();
+    }
 
-
-
+    public boolean isValidSetupPossible(){
+        return WIDTH>=10 && HEIGHT >=10 && RND_POINTS >=1;
     }
 
     public void makeNewSetup() {
         generateData(); //new matrix
+        alreadySimulated=false;
 
         Runnable afterDataGeneration = new Runnable() {
             @Override
             public void run() {
-                mainFrame.setupNewChart(); //new chart
-                mainFrame.revalidate();
-                mainFrame.repaint();
-                mainFrame.pack();
+                if(isChartVisible()){
+                    generateChart();
+                }
             }
         };
 
         SwingUtilities.invokeLater(afterDataGeneration);
+    }
+
+    public void generateChart(){
+        mainFrame.setupNewChart(); //new chart
+        mainFrame.revalidate();
+        mainFrame.repaint();
+        mainFrame.pack();
     }
 
     public void updateExecutionTime(String timeTaken) {
@@ -61,14 +74,18 @@ public class Controller {
 
 
     public void startSimulation() {
-        if (computationThread == null || !computationThread.isAlive()) {
-            computationThread = new ComputationThread(this);
-            computationThread.setRunning(true);
-            computationThread.start();
-        } else {
-            computationThread.setRunning(!computationThread.isRunning());
+        if(!alreadySimulated){
+            if (computationThread == null || !computationThread.isAlive()) {
+                computationThread = new ComputationThread(this);
+                computationThread.setRunning(true);
+                computationThread.start();
+            } else {
+                computationThread.setRunning(!computationThread.isRunning());
+            }
+            alreadySimulated=true;
         }
     }
+
 
     public void repaintChart(){
         mainFrame.getChart().repaint();
@@ -98,5 +115,9 @@ public class Controller {
 
     public void setRND_POINTS(int RND_POINTS) {
         this.RND_POINTS = RND_POINTS;
+    }
+
+    public void setChartVisible(boolean chartVisible) {
+        this.chartVisible = chartVisible;
     }
 }

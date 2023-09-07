@@ -55,8 +55,8 @@ public class ComputationThread extends Thread {
         }
         long end = System.currentTimeMillis();
 
-        controller.updateExecutionTime((end-start) + "");
-        System.out.println("Execution time: " + (end - start) + " ms");
+        controller.updateExecutionTime((end-start) + "ms");
+        System.out.println( (end - start));
     }
 
 

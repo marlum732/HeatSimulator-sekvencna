@@ -13,6 +13,7 @@ public class SetupPanel extends JPanel {
 
     private JLabel executionTime;
     private JTextField inputWidth, inputHeight, inputRndPoints;
+    private JButton showGuiButton, startSimulationButton, newSetupButton;
     private Controller controller;
 
     public SetupPanel(int WIDTH, int HEIGHT, Controller controller) {
@@ -44,33 +45,15 @@ public class SetupPanel extends JPanel {
         ((AbstractDocument) inputHeight.getDocument()).setDocumentFilter(numberFilter);
         ((AbstractDocument) inputRndPoints.getDocument()).setDocumentFilter(numberFilter);
 
-
-        JButton showGuiButton = new JButton("Show map");
-        JButton startSimulationButton = new JButton("Start simulation");
-        JButton newSetupButton = new JButton("Setup parameters");
-
-        newSetupButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.makeNewSetup();
-            }
-        });
+        EventHandler eh = new EventHandler();
+        showGuiButton = new JButton("Show map");
+        startSimulationButton = new JButton("Start simulation");
+        newSetupButton = new JButton("Setup parameters");
+        showGuiButton.addActionListener(eh);
+        startSimulationButton.addActionListener(eh);
+        newSetupButton.addActionListener(eh);
 
 
-        showGuiButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ContentPanel parent = (ContentPanel) getParent();
-                parent.showHideMap();
-            }
-        });
-
-        startSimulationButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.startSimulation();
-            }
-        });
 
 
         add(titleLabel);
@@ -193,7 +176,38 @@ public class SetupPanel extends JPanel {
         }
     }
 
+    private class EventHandler implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton btn = (JButton) e.getSource();
+
+            if (btn == (newSetupButton)){
+                if (controller.isValidSetupPossible()) {
+                    controller.makeNewSetup();
+                    controller.updateExecutionTime("");
+                }
+
+            }else if (btn==(showGuiButton)){
+                ContentPanel parent = (ContentPanel) getParent();
+                if(controller.isChartVisible()){
+                    showGuiButton.setText("Show chart");
+                    parent.showHideMap();
+                    controller.setChartVisible(!controller.isChartVisible());
+                }else{
+                    showGuiButton.setText("Hide chart");
+                    parent.showHideMap();
+                    controller.generateData();
+                    controller.setChartVisible(!controller.isChartVisible());
+                }
+            }else if (btn==(startSimulationButton)) {
+                controller.startSimulation();
+
+            }
+        }
+    }
+
     public void updateExecutionTime(String s) {
-        executionTime.setText("Execution time: " + s + "ms");
+        executionTime.setText("Execution time: " + s);
     }
 }
